@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Boost Juice — Mystery Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#5cb800; --green-light:#edf7e0; --green-dark:#3d8000;
+  --dark:#1a1a1a; --mid:#555; --muted:#888;
+  --border:#e8e8e8; --bg:#f5f5f2; --white:#fff;
+  --red:#e03535; --red-light:#fdf0f0;
+  --amber:#f59e0b; --amber-light:#fffbeb;
+  --radius:14px; --radius-sm:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);font-size:16px;line-height:1.5}
+
+#form-view{max-width:680px;margin:0 auto;padding:20px 16px 80px}
+
+.form-hero{background:var(--dark);border-radius:var(--radius);padding:28px 24px 0;margin-bottom:20px;position:relative;overflow:hidden}
+.form-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:var(--green);border-radius:50%;opacity:.12}
+.form-hero::after{content:'';position:absolute;bottom:-60px;right:60px;width:240px;height:240px;background:var(--green);border-radius:50%;opacity:.06}
+.hero-label{font-size:11px;font-weight:600;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:8px;position:relative}
+.form-hero h1{font-size:24px;font-weight:600;color:#fff;line-height:1.2;margin-bottom:6px;position:relative}
+.form-hero p{font-size:13px;color:rgba(255,255,255,.5);position:relative;padding-bottom:20px}
+.hero-bar{margin:0 -24px;border-top:1px solid rgba(255,255,255,.07);display:grid;grid-template-columns:repeat(3,1fr)}
+.hero-stat{padding:12px 16px;border-right:1px solid rgba(255,255,255,.07)}
+.hero-stat:last-child{border-right:none}
+.hero-stat .sl{font-size:10px;color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.hero-stat .sv{font-size:13px;font-weight:500;color:rgba(255,255,255,.65);font-family:'DM Mono',monospace}
+
+.section-block{background:var(--white);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;border:1px solid var(--border)}
+.section-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border)}
+.sec-num{width:32px;height:32px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0}
+.sec-num.grey{background:var(--dark)}
+.section-head h2{font-size:15px;font-weight:600;color:var(--dark)}
+.sec-pts{margin-left:auto;font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);background:var(--bg);padding:4px 10px;border-radius:20px;white-space:nowrap}
+
+.field{padding:16px 18px;border-bottom:1px solid var(--border)}
+.field:last-child{border-bottom:none}
+.field-label{font-size:14px;font-weight:500;color:var(--dark);margin-bottom:12px;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap;line-height:1.4}
+.pts-tag{font-size:11px;font-family:'DM Mono',monospace;color:var(--green);background:var(--green-light);padding:3px 9px;border-radius:10px;font-weight:500;white-space:nowrap;flex-shrink:0}
+.field-hint{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+
+input[type=text],input[type=number],input[type=date],input[type=email],textarea{
+  width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  font-family:'DM Sans',sans-serif;font-size:16px;color:var(--dark);background:var(--bg);
+  outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none
+}
+input:focus,textarea:focus{border-color:var(--green);background:#fff}
+textarea{min-height:88px;resize:vertical}
+
+.form-grid-2{display:grid;grid-template-columns:1fr}
+@media(min-width:480px){.form-grid-2{grid-template-columns:1fr 1fr;gap:12px}}
+
+.radio-row{display:flex;flex-direction:column;gap:8px}
+@media(min-width:480px){.radio-row{flex-direction:row;flex-wrap:wrap}}
+.radio-row label{display:flex;align-items:center;gap:10px;font-size:15px;cursor:pointer;
+  padding:13px 18px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  color:var(--mid);transition:all .15s;user-select:none;-webkit-user-select:none;min-height:50px;
+  touch-action:manipulation}
+.radio-row input[type=radio]{display:none}
+.radio-row label.active{background:var(--green);border-color:var(--green);color:#fff;font-weight:500}
+
+.nps-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+@media(min-width:460px){.nps-grid{grid-template-columns:repeat(11,1fr)}}
+.nps-btn{width:100%;aspect-ratio:1;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  background:var(--bg);font-family:'DM Mono',monospace;font-size:15px;font-weight:500;
+  cursor:pointer;color:var(--mid);transition:all .15s;display:flex;align-items:center;justify-content:center;
+  touch-action:manipulation}
+.nps-btn.active{background:var(--green);border-color:var(--green);color:#fff}
+
+.btn-generate{width:100%;padding:18px;background:var(--green);color:#fff;border:none;border-radius:var(--radius);
+  font-family:'DM Sans',sans-serif;font-size:17px;font-weight:600;cursor:pointer;margin-top:24px;
+  touch-action:manipulation;transition:background .15s}
+.btn-generate:disabled{background:#aaa;cursor:not-allowed}
+.btn-secondary{width:100%;padding:14px;background:transparent;color:var(--muted);border:1.5px solid var(--border);
+  border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer;margin-top:10px;touch-action:manipulation}
+
+/* Success screen */
+#success-view{display:none;max-width:480px;margin:0 auto;padding:40px 16px;text-align:center}
+.success-icon{width:72px;height:72px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:32px}
+.success-title{font-size:22px;font-weight:700;color:var(--dark);margin-bottom:8px}
+.success-sub{font-size:15px;color:var(--muted);line-height:1.6;margin-bottom:28px}
+.success-score{background:var(--dark);border-radius:var(--radius);padding:20px 24px;margin-bottom:24px;text-align:left}
+.success-score .ss-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:6px}
+.success-score .ss-val{font-family:'DM Mono',monospace;font-size:36px;font-weight:500}
+.btn-new{width:100%;padding:16px;background:var(--green);color:#fff;border:none;border-radius:var(--radius);
+  font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer;touch-action:manipulation}
+
+/* Submitting overlay */
+#submitting-overlay{display:none;position:fixed;inset:0;background:rgba(26,26,26,.7);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+#submitting-overlay.show{display:flex}
+.spinner{width:44px;height:44px;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.submitting-text{color:#fff;font-size:15px;font-weight:500}
+</style>
+</head>
+<body>
+
+<div id="submitting-overlay">
+  <div class="spinner"></div>
+  <div class="submitting-text">Submitting your report…</div>
+</div>
+
+<!-- ══════ FORM ══════ -->
+<div id="form-view">
+  <div class="form-hero">
+    <div class="hero-label">Boost Juice Bars</div>
+    <h1>Mystery Shop<br>Questionnaire</h1>
+    <p>Complete all sections during or immediately after your visit.</p>
+    <div class="hero-bar">
+      <div class="hero-stat"><div class="sl">Sections</div><div class="sv">8</div></div>
+      <div class="hero-stat"><div class="sl">Questions</div><div class="sv">20</div></div>
+      <div class="hero-stat"><div class="sl">Total pts</div><div class="sv">30</div></div>
+    </div>
+  </div>
+
+  <!-- Shopper details -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num grey">★</div><h2>Your details</h2></div>
+    <div class="field">
+      <div class="form-grid-2">
+        <div style="margin-bottom:12px">
+          <div class="field-label" style="margin-bottom:8px">Your name <span style="color:var(--red);font-size:12px">*</span></div>
+          <input type="text" id="f-shopper-name" placeholder="First and last name">
+        </div>
+        <div>
+          <div class="field-label" style="margin-bottom:8px">Your email <span style="color:var(--red);font-size:12px">*</span></div>
+          <input type="email" id="f-shopper-email" placeholder="your@email.com">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Visit details -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num grey">i</div><h2>Visit details</h2></div>
+    <div class="field">
+      <div class="form-grid-2">
+        <div style="margin-bottom:12px">
+          <div class="field-label" style="margin-bottom:8px">Store name / location</div>
+          <input type="text" id="f-store" placeholder="e.g. Bristol Cribbs">
+        </div>
+        <div style="margin-bottom:12px">
+          <div class="field-label" style="margin-bottom:8px">Visit date</div>
+          <input type="date" id="f-date">
+        </div>
+        <div style="margin-bottom:12px">
+          <div class="field-label" style="margin-bottom:8px">Time of entry (24hr)</div>
+          <input type="text" id="f-time" placeholder="e.g. 15:36" maxlength="5">
+        </div>
+        <div>
+          <div class="field-label" style="margin-bottom:8px">Amount spent (£)</div>
+          <input type="number" id="f-spend" step="0.01" min="0" placeholder="0.00">
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label" style="margin-bottom:8px">Drink purchased</div>
+      <input type="text" id="f-drink" placeholder="e.g. Regular Mango Magic">
+    </div>
+    <div class="field">
+      <div class="field-label">Level of trade</div>
+      <div class="radio-row">
+        <label><input type="radio" name="trade" value="Quiet">Quiet</label>
+        <label><input type="radio" name="trade" value="Moderate">Moderate</label>
+        <label><input type="radio" name="trade" value="Busy">Busy</label>
+        <label><input type="radio" name="trade" value="Very busy">Very busy</label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label" style="margin-bottom:8px">Team member description</div>
+      <textarea id="f-tm" placeholder="Gender, approximate age, hair colour/length, any notable features…"></textarea>
+    </div>
+  </div>
+
+  <!-- S1 -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num">1</div><h2>First impressions</h2><span class="sec-pts">4 pts</span></div>
+    <div class="field"><div class="field-label">Till area clean, organised and stocked? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q1" value="1">Yes</label><label><input type="radio" name="q1" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">Music playing at an appropriate level? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q2" value="1">Yes</label><label><input type="radio" name="q2" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">More than 1 team member evident? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q3" value="1">Yes</label><label><input type="radio" name="q3" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">Positive atmosphere (team fun, juggling tasks, customer interaction)? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q4" value="1">Yes</label><label><input type="radio" name="q4" value="0">No</label></div></div>
+  </div>
+
+  <!-- S2 -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num">2</div><h2>Customer service</h2><span class="sec-pts">10 pts</span></div>
+    <div class="field"><div class="field-label">Greeted promptly upon arriving at the till? <span class="pts-tag">1 pt</span></div><div class="field-hint">If using a self-serve till, were you approached and asked if you needed help?</div><div class="radio-row"><label><input type="radio" name="q5" value="1">Yes</label><label><input type="radio" name="q5" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">Received a friendly greeting / welcome? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q6" value="1">Yes</label><label><input type="radio" name="q6" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">Team member warm and friendly throughout? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q7" value="1">Yes</label><label><input type="radio" name="q7" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">Asked for your name? <span class="pts-tag">3 pts</span></div><div class="radio-row"><label><input type="radio" name="q8" value="3">Yes</label><label><input type="radio" name="q8" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">Directed to pour-up area after ordering? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q9" value="1">Yes</label><label><input type="radio" name="q9" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">At pour-up: eye contact, smile and order confirmed? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q10" value="1">Yes</label><label><input type="radio" name="q10" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">Ended with a warm farewell? <span class="pts-tag">2 pts</span></div><div class="radio-row"><label><input type="radio" name="q11" value="2">Yes</label><label><input type="radio" name="q11" value="0">No</label></div></div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num">3</div><h2>Product knowledge</h2><span class="sec-pts">2 pts</span></div>
+    <div class="field"><div class="field-label">Asked about any allergies (nuts or dairy)? <span class="pts-tag">2 pts</span></div><div class="radio-row"><label><input type="radio" name="q12" value="2">Yes</label><label><input type="radio" name="q12" value="0">No</label></div></div>
+  </div>
+
+  <!-- S4 -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num">4</div><h2>Selling skills</h2><span class="sec-pts">3 pts</span></div>
+    <div class="field"><div class="field-label">Offered double fruit, booster, double chocolate or cream? <span class="pts-tag">3 pts</span></div><div class="radio-row"><label><input type="radio" name="q13" value="3">Yes</label><label><input type="radio" name="q13" value="0">No</label></div></div>
+  </div>
+
+  <!-- S5 -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num">5</div><h2>VIBE Club</h2><span class="sec-pts">6 pts</span></div>
+    <div class="field"><div class="field-label">Prompted or gestured to QR code to sign up to VIBE Club? <span class="pts-tag">3 pts</span></div><div class="field-hint">Select N/A if the shopper already has a VIBE Club account — no points deducted.</div><div class="radio-row"><label><input type="radio" name="q14" value="3">Yes</label><label><input type="radio" name="q14" value="0">No</label><label><input type="radio" name="q14" value="na">N/A — already a member</label></div></div>
+    <div class="field"><div class="field-label">Did they sell the VIBE Club — explaining points and free drink at 9 stamps? <span class="pts-tag">3 pts</span></div><div class="field-hint">They should actively explain the benefit, not just point to a QR code. Select N/A if the shopper already has a VIBE Club account.</div><div class="radio-row"><label><input type="radio" name="q14b" value="3">Yes — explained clearly</label><label><input type="radio" name="q14b" value="1">Mentioned but didn't explain</label><label><input type="radio" name="q14b" value="0">No</label><label><input type="radio" name="q14b" value="na">N/A — already a member</label></div></div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num">6</div><h2>Delivery time</h2><span class="sec-pts">2 pts</span></div>
+    <div class="field"><div class="field-label">Time from placing order to receiving drink? <span class="pts-tag">2 pts</span></div><div class="radio-row"><label><input type="radio" name="q15" value="2">Under 4 mins</label><label><input type="radio" name="q15" value="1">4–6 mins</label><label><input type="radio" name="q15" value="0">Over 6 mins</label></div></div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num">7</div><h2>Drink quality</h2><span class="sec-pts">3 pts</span></div>
+    <div class="field"><div class="field-label">Cup filled correctly (near top)? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q17" value="1">Yes</label><label><input type="radio" name="q17" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">If smoothie — thick, lava-like consistency? <span class="pts-tag">1 pt</span></div><div class="field-hint">Select N/A if you didn't order a smoothie — no points deducted.</div><div class="radio-row"><label><input type="radio" name="q18" value="1">Yes</label><label><input type="radio" name="q18" value="0">No</label><label><input type="radio" name="q18" value="na">N/A</label></div></div>
+    <div class="field"><div class="field-label">If Crush — proper slushie consistency? <span class="pts-tag">1 pt</span></div><div class="field-hint">Select N/A if you didn't order a Crush.</div><div class="radio-row"><label><input type="radio" name="q18b" value="1">Yes</label><label><input type="radio" name="q18b" value="0">No</label><label><input type="radio" name="q18b" value="na">N/A</label></div></div>
+    <div class="field"><div class="field-label">If juice — were you asked if you'd like ice? <span class="pts-tag">1 pt</span></div><div class="field-hint">Select N/A if you didn't order a juice.</div><div class="radio-row"><label><input type="radio" name="q18c" value="1">Yes</label><label><input type="radio" name="q18c" value="0">No</label><label><input type="radio" name="q18c" value="na">N/A</label></div></div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num">8</div><h2>Team members</h2><span class="sec-pts">3 pts</span></div>
+    <div class="field"><div class="field-label">All wearing clean company branded tops and aprons? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q19" value="1">Yes</label><label><input type="radio" name="q19" value="0">No</label></div></div>
+    <div class="field"><div class="field-label">Behaving appropriately — no eating, phones, earbuds or gum? <span class="pts-tag">2 pts</span></div><div class="radio-row"><label><input type="radio" name="q20" value="2">Yes</label><label><input type="radio" name="q20" value="0">No</label></div></div>
+  </div>
+
+  <!-- Overall -->
+  <div class="section-block">
+    <div class="section-head"><div class="sec-num grey" style="font-size:17px">★</div><h2>Overall impressions</h2></div>
+    <div class="field">
+      <div class="field-label">Likelihood to recommend (0 = not at all · 10 = extremely likely)</div>
+      <div class="nps-grid">
+        <button class="nps-btn" type="button" onclick="setNps(this,0)" ontouchend="setNps(this,0)">0</button>
+        <button class="nps-btn" type="button" onclick="setNps(this,1)" ontouchend="setNps(this,1)">1</button>
+        <button class="nps-btn" type="button" onclick="setNps(this,2)" ontouchend="setNps(this,2)">2</button>
+        <button class="nps-btn" type="button" onclick="setNps(this,3)" ontouchend="setNps(this,3)">3</button>
+        <button class="nps-btn" type="button" onclick="setNps(this,4)" ontouchend="setNps(this,4)">4</button>
+        <button class="nps-btn" type="button" onclick="setNps(this,5)" ontouchend="setNps(this,5)">5</button>
+        <button class="nps-btn" type="button" onclick="setNps(this,6)" ontouchend="setNps(this,6)">6</button>
+        <button class="nps-btn" type="button" onclick="setNps(this,7)" ontouchend="setNps(this,7)">7</button>
+        <button class="nps-btn" type="button" onclick="setNps(this,8)" ontouchend="setNps(this,8)">8</button>
+        <button class="nps-btn" type="button" onclick="setNps(this,9)" ontouchend="setNps(this,9)">9</button>
+        <button class="nps-btn" type="button" onclick="setNps(this,10)" ontouchend="setNps(this,10)">10</button>
+      </div>
+    </div>
+    <div class="field"><div class="field-label">Would you return to this location?</div><div class="radio-row"><label><input type="radio" name="qret" value="Yes">Yes</label><label><input type="radio" name="qret" value="No">No</label></div></div>
+    <div class="field"><div class="field-label" style="margin-bottom:8px">Most POSITIVE part of your visit</div><textarea id="f-pos" placeholder="What stood out most positively?"></textarea></div>
+    <div class="field"><div class="field-label" style="margin-bottom:8px">Most NEGATIVE part of your visit</div><textarea id="f-neg" placeholder="Anything that could be improved?"></textarea></div>
+    <div class="field"><div class="field-label" style="margin-bottom:8px">Team member who delivered outstanding service</div><textarea id="f-out" placeholder="Name or describe them. Write N/A if none." style="min-height:60px"></textarea></div>
+    <div class="field">
+      <div class="field-label">Which area needs the most improvement?</div>
+      <div class="radio-row">
+        <label><input type="radio" name="qimp" value="Drink quality">Drink</label>
+        <label><input type="radio" name="qimp" value="Customer service">Customer service</label>
+        <label><input type="radio" name="qimp" value="Store environment">Environment</label>
+        <label><input type="radio" name="qimp" value="Price / value">Price</label>
+        <label><input type="radio" name="qimp" value="Nothing — all good">Nothing</label>
+      </div>
+    </div>
+    <div class="field"><div class="field-label" style="margin-bottom:8px">Any additional comments</div><textarea id="f-notes" placeholder="Any other observations…"></textarea></div>
+  </div>
+
+  <div id="submit-error" style="display:none;background:#fdf0f0;border:1px solid #f5c6c6;border-radius:10px;padding:14px 16px;margin-top:16px;font-size:14px;color:#c0392b"></div>
+  <button class="btn-generate" id="btn-submit" onclick="submitForm()">Submit report →</button>
+  <button class="btn-secondary" onclick="clr()">Clear all answers</button>
+</div>
+
+<!-- ══════ SUCCESS ══════ -->
+<div id="success-view">
+  <div class="success-icon">✓</div>
+  <div class="success-title">Report submitted!</div>
+  <div class="success-sub">Your mystery shop has been recorded.<br>Thank you for completing the visit.</div>
+  <div class="success-score" id="success-score-block"></div>
+  <button class="btn-new" onclick="newForm()">Submit another visit</button>
+</div>
+
+<script>
+var SUPABASE_URL = 'https://muwlyszxjuzpjramhcvi.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_2QIQ7D95eNrFNlbv8j934g_lA1EQCkM';
+var npsVal = null;
+
+// ── Radio activation (works on iOS) ──
+document.querySelectorAll('.radio-row').forEach(function(g) {
+  g.querySelectorAll('label').forEach(function(l) {
+    function activate() {
+      g.querySelectorAll('label').forEach(function(x){ x.classList.remove('active'); });
+      l.classList.add('active');
+    }
+    l.addEventListener('click', activate);
+    l.addEventListener('touchend', function() {
+      var inp = l.querySelector('input[type=radio]');
+      if (inp) inp.checked = true;
+      activate();
+    });
+  });
+});
+
+function setNps(b, v) {
+  npsVal = v;
+  document.querySelectorAll('.nps-btn').forEach(function(x){ x.classList.remove('active'); });
+  b.classList.add('active');
+}
+
+function rv(n) {
+  var e = document.querySelector('input[name="'+n+'"]:checked');
+  return e ? e.value : null;
+}
+
+var SECS = [
+  {name:'1. First impressions',qs:[
+    {id:'q1',label:'Till area clean, organised and stocked',max:1},
+    {id:'q2',label:'Music playing at an appropriate level',max:1},
+    {id:'q3',label:'More than 1 team member evident',max:1},
+    {id:'q4',label:'Positive atmosphere',max:1}
+  ]},
+  {name:'2. Customer service',qs:[
+    {id:'q5',label:'Greeted promptly',max:1},
+    {id:'q6',label:'Friendly greeting / welcome',max:1},
+    {id:'q7',label:'Warm and friendly throughout',max:1},
+    {id:'q8',label:'Asked for your name',max:3},
+    {id:'q9',label:'Directed to pour-up area',max:1},
+    {id:'q10',label:'Eye contact, smile and order confirmed at pour-up',max:1},
+    {id:'q11',label:'Warm farewell',max:2}
+  ]},
+  {name:'3. Product knowledge',qs:[{id:'q12',label:'Asked about allergies',max:2}]},
+  {name:'4. Selling skills',qs:[{id:'q13',label:'Offered upsell',max:3}]},
+  {name:'5. VIBE Club',qs:[
+    {id:'q14',label:'Prompted VIBE Club QR code',max:3,optional:true},
+    {id:'q14b',label:'Sold the VIBE Club benefits',max:3,optional:true}
+  ]},
+  {name:'6. Delivery time',qs:[{id:'q15',label:'Order within target time',max:2}]},
+  {name:'7. Drink quality',qs:[
+    {id:'q17',label:'Cup filled correctly',max:1},
+    {id:'q18',label:'Smoothie consistency (if applicable)',max:1,optional:true},
+    {id:'q18b',label:'Crush consistency (if applicable)',max:1,optional:true},
+    {id:'q18c',label:'Juice — asked about ice (if applicable)',max:1,optional:true}
+  ]},
+  {name:'8. Team members',qs:[
+    {id:'q19',label:'Clean branded uniform',max:1},
+    {id:'q20',label:'Behaving appropriately',max:2}
+  ]}
+];
+
+function calcScore() {
+  var tp=0, tm=0, secs=[];
+  SECS.forEach(function(sec) {
+    var sp=0, sm=0, qr=[];
+    sec.qs.forEach(function(q) {
+      var raw=rv(q.id);
+      if(q.optional && raw==='na'){qr.push({label:q.label,scored:0,max:0,na:true});return;}
+      var v=(raw!==null)?parseInt(raw):null;
+      var s=(v!==null)?v:0;
+      sp+=s; sm+=q.max;
+      qr.push({label:q.label,scored:s,max:q.max,na:false,unanswered:v===null});
+    });
+    tp+=sp; tm+=sm;
+    var pct=sm>0?Math.round(sp/sm*100):100;
+    secs.push({name:sec.name,scored:sp,max:sm,pct:pct,qs:qr});
+  });
+  return {tp:tp,tm:tm,secs:secs};
+}
+
+function buildReportHtml(data) {
+  var C={green:'#5cb800',greenLight:'#edf7e0',greenDark:'#3a7a00',dark:'#1a1a1a',mid:'#555555',muted:'#888888',border:'#e8e8e8',bg:'#f5f5f2',white:'#ffffff',red:'#e03535',redLight:'#fdf0f0',amber:'#f59e0b',amberLight:'#fffbeb',amberDark:'#92400e'};
+  function ps(type){var bg,c;if(type==='pass'){bg=C.greenLight;c=C.greenDark;}else if(type==='fail'){bg=C.redLight;c=C.red;}else if(type==='warn'){bg=C.amberLight;c=C.amberDark;}else if(type==='total-g'){bg=C.green;c=C.white;}else if(type==='total-a'){bg=C.amber;c=C.white;}else if(type==='total-r'){bg=C.red;c=C.white;}else{bg=C.bg;c=C.muted;}return 'display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:600;font-family:"DM Mono",monospace;background:'+bg+';color:'+c+';min-width:52px;text-align:center';}
+  function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  var sc=data.score, tp=sc.tp, tm=sc.tm;
+  var ov=tm>0?(tp/tm*100).toFixed(1):'0.0';
+  var pn=parseFloat(ov);
+  var perf=pn>=90?'Excellent':pn>=75?'Good':pn>=60?'Needs improvement':'Unsatisfactory';
+  var scoreCol=pn>=90?C.green:pn>=75?C.amber:C.red;
+  var totalType=pn>=90?'total-g':pn>=75?'total-a':'total-r';
+  function spt(p){return p===100?'pass':p>=60?'warn':'fail';}
+  var npsColor=data.nps===null?C.muted:data.nps>=9?C.green:data.nps>=7?C.amber:C.red;
+  var npsLabel=data.nps===null?'—':data.nps>=9?'Promoter':data.nps>=7?'Passive':'Detractor';
+
+  var dateStr=data.visitDate?new Date(data.visitDate+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}):'—';
+  var dayName=data.visitDate?new Date(data.visitDate+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long'}):'';
+  var genStr=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  var h='';
+  // Hero
+  h+='<div style="background:'+C.dark+';border-radius:12px;margin-bottom:14px;overflow:hidden">';
+  h+='<div style="padding:26px 24px 20px">';
+  h+='<div style="font-size:10px;font-weight:600;letter-spacing:2px;color:'+C.green+';text-transform:uppercase;margin-bottom:8px">Mystery Shop Report · Boost Juice Bars</div>';
+  h+='<div style="font-size:22px;font-weight:700;color:#fff;margin-bottom:4px">'+esc(data.store)+'</div>';
+  h+='<div style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:20px">'+(dayName?dayName+', ':'')+dateStr+' · '+esc(data.visitTime)+'</div>';
+  h+='<div style="display:flex;align-items:baseline;gap:14px;margin-bottom:6px">';
+  h+='<div style="font-family:\'DM Mono\',monospace;font-size:52px;font-weight:500;line-height:1;color:'+scoreCol+'">'+ov+'%</div>';
+  h+='<div><div style="font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:'+scoreCol+'">'+perf+'</div>';
+  h+='<div style="font-family:\'DM Mono\',monospace;font-size:12px;color:rgba(255,255,255,0.5);margin-top:3px">'+tp+' / '+tm+' points</div></div></div>';
+  h+='<div style="margin-top:14px"><div style="height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden"><div style="height:100%;width:'+ov+'%;background:'+scoreCol+';border-radius:3px"></div></div>';
+  h+='<div style="display:flex;justify-content:space-between;margin-top:5px"><span style="font-size:10px;color:rgba(255,255,255,0.35)">0%</span><span style="font-size:10px;color:rgba(255,255,255,0.35)">▶ Target 75%</span><span style="font-size:10px;color:rgba(255,255,255,0.35)">100%</span></div></div></div>';
+  h+='<table style="width:100%;border-collapse:collapse;border-top:1px solid rgba(255,255,255,0.1)"><tr>';
+  [['Drink',esc(data.drink)],['Spent',data.spend?'£'+parseFloat(data.spend).toFixed(2):'—'],['Trade level',esc(data.tradeLevel)],['NPS',data.nps!==null?data.nps+'/10 — '+npsLabel:'—']].forEach(function(s,i){
+    h+='<td style="'+(i<3?'border-right:1px solid rgba(255,255,255,0.1);':'')+'padding:13px 16px;width:25%"><div style="font-size:10px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px">'+s[0]+'</div><div style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.75)">'+s[1]+'</div></td>';
+  });
+  h+='</tr></table></div>';
+
+  // Section summary
+  h+='<div style="background:'+C.white+';border:1px solid '+C.border+';border-radius:12px;margin-bottom:12px;overflow:hidden">';
+  h+='<div style="padding:12px 18px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;color:'+C.white+';background:'+C.dark+'"><span>Section summary</span><span style="font-family:\'DM Mono\',monospace;font-size:12px;letter-spacing:0;color:rgba(255,255,255,0.6)">'+tp+' / '+tm+' pts</span></div>';
+  h+='<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr>';
+  h+='<th style="padding:9px 14px;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:'+C.muted+';border-bottom:1px solid '+C.border+';background:'+C.bg+';text-align:left">Section</th>';
+  h+='<th style="padding:9px 14px;font-size:10px;font-weight:600;text-transform:uppercase;color:'+C.muted+';border-bottom:1px solid '+C.border+';background:'+C.bg+';text-align:right">Pts</th>';
+  h+='<th style="padding:9px 14px;font-size:10px;font-weight:600;text-transform:uppercase;color:'+C.muted+';border-bottom:1px solid '+C.border+';background:'+C.bg+';text-align:right">Score</th>';
+  h+='</tr></thead><tbody>';
+  sc.secs.forEach(function(s,i){
+    var last=i===sc.secs.length-1;
+    var bd=last?'':'border-bottom:1px solid '+C.border+';';
+    h+='<tr><td style="padding:12px 14px;'+bd+'color:'+C.dark+'">'+esc(s.name)+'</td><td style="padding:12px 14px;'+bd+'text-align:right;font-family:\'DM Mono\',monospace;font-size:12px;color:'+C.muted+'">'+s.scored+'/'+s.max+'</td><td style="padding:12px 14px;'+bd+'text-align:right"><span style="'+ps(spt(s.pct))+'">'+s.pct+'%</span></td></tr>';
+  });
+  h+='<tr style="background:'+C.bg+'"><td style="padding:12px 14px;font-weight:600;color:'+C.dark+'">Total</td><td style="padding:12px 14px;text-align:right;font-family:\'DM Mono\',monospace;font-size:12px;font-weight:600">'+tp+'/'+tm+'</td><td style="padding:12px 14px;text-align:right"><span style="'+ps(totalType)+'">'+ov+'%</span></td></tr>';
+  h+='</tbody></table></div>';
+
+  // Attention areas
+  var attn=sc.secs.filter(function(s){return s.scored<s.max;});
+  if(attn.length>0){
+    h+='<div style="background:#fffbf0;border:1px solid #f0d080;border-radius:12px;padding:18px;margin-bottom:12px">';
+    h+='<div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#92600a;margin-bottom:14px">Areas requiring attention</div>';
+    attn.forEach(function(a,i){
+      var impact=((a.max-a.scored)/tm*100).toFixed(1);
+      var last=i===attn.length-1;
+      h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;'+(last?'':'border-bottom:1px solid #f0d080')+'"><div><div style="font-size:14px;font-weight:500;color:#5a3a00">'+esc(a.name)+'</div><div style="font-size:12px;color:#92600a;margin-top:2px">'+(a.max-a.scored)+' pts missed · −'+impact+'% impact</div></div><div style="font-family:\'DM Mono\',monospace;font-size:20px;font-weight:500;color:#c47a00">−'+impact+'%</div></div>';
+    });
+    h+='</div>';
+  }
+
+  // Section detail cards
+  sc.secs.forEach(function(s){
+    var pass=s.scored===s.max, partial=!pass&&s.pct>=60;
+    var hbg=pass?C.green:partial?C.amber:C.red;
+    var card='background:'+C.white+';border:1px solid '+C.border+';border-radius:12px;margin-bottom:12px;overflow:hidden';
+    h+='<div style="'+card+'"><div style="padding:12px 18px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;color:#fff;background:'+hbg+'"><span>'+esc(s.name)+'</span><span style="font-family:\'DM Mono\',monospace;font-size:12px;letter-spacing:0">'+s.scored+' / '+s.max+' pts</span></div>';
+    s.qs.forEach(function(q,qi){
+      var last=qi===s.qs.length-1;
+      var rStyle='display:flex;justify-content:space-between;align-items:center;padding:12px 18px;'+(last?'':'border-bottom:1px solid '+C.border+';')+'font-size:14px;gap:12px';
+      h+='<div style="'+rStyle+'"><div style="flex:1;line-height:1.4;color:'+C.dark+'">'+esc(q.label)+'</div><div style="display:flex;align-items:center;gap:8px;flex-shrink:0">';
+      if(q.na){h+='<span style="'+ps('na')+'">N/A</span>';}
+      else if(q.unanswered){h+='<span style="font-family:\'DM Mono\',monospace;font-size:12px;color:'+C.muted+'">—/'+q.max+'</span><span style="'+ps('na')+'">Skipped</span>';}
+      else{var qp=q.scored===q.max,qpart=q.scored>0&&!qp,pt=qp?'pass':qpart?'warn':'fail',lbl=qp?'Pass':qpart?q.scored+'/'+q.max:'Fail';h+='<span style="font-family:\'DM Mono\',monospace;font-size:12px;color:'+C.muted+'">'+q.scored+'/'+q.max+'</span><span style="'+ps(pt)+'">'+lbl+'</span>';}
+      h+='</div></div>';
+    });
+    h+='</div>';
+  });
+
+  // Overall impressions
+  var S={label:'font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:'+C.muted+';margin-bottom:5px',text:'font-size:14px;color:'+C.dark+';line-height:1.6'};
+  h+='<div style="background:'+C.white+';border:1px solid '+C.border+';border-radius:12px;margin-bottom:12px;overflow:hidden">';
+  h+='<div style="padding:12px 18px;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#fff;background:'+C.dark+'">Overall impressions</div>';
+  function cRow(label,val,last){var empty=!val||val==='—';var bd=last?'':'border-bottom:1px solid '+C.border+';';h+='<div style="padding:13px 18px;'+bd+'"><div style="'+S.label+'">'+label+'</div><div style="'+S.text+(empty?';color:'+C.muted+';font-style:italic':'')+'">'+(empty?'Not provided':esc(val).replace(/\n/g,'<br>'))+'</div></div>';}
+  cRow('Shopper',data.shopperName+(data.shopperEmail?' · '+data.shopperEmail:''));
+  cRow('Team member description',data.tmDesc);
+  cRow('Most positive aspect',data.positive);
+  cRow('Most negative aspect',data.negative);
+  cRow('Outstanding team member',data.outstandingTm);
+  cRow('Would return?',data.wouldReturn);
+  cRow('Area needing most improvement',data.improvementArea);
+  cRow('Additional notes',data.notes,data.nps===null);
+  h+='<div style="padding:13px 18px"><div style="'+S.label+'">Likelihood to recommend (NPS)</div>';
+  if(data.nps!==null){h+='<div style="display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;border-radius:50%;background:'+npsColor+';display:flex;align-items:center;justify-content:center;font-family:\'DM Mono\',monospace;font-size:15px;font-weight:600;color:#fff">'+data.nps+'</div><span style="font-size:14px;color:'+C.mid+'"><strong>'+npsLabel+'</strong> · Score: '+data.nps+' / 10</span></div>';}
+  else{h+='<div style="font-size:14px;color:'+C.muted+';font-style:italic">Not provided</div>';}
+  h+='</div></div>';
+  h+='<div style="text-align:center;font-size:11px;color:'+C.muted+';margin-top:16px;padding-bottom:8px;font-family:\'DM Mono\',monospace">Generated '+genStr+' · Boost Juice Bars Mystery Shop · '+esc(data.store)+'</div>';
+  return h;
+}
+
+async function submitForm() {
+  // Validate required fields
+  var name  = document.getElementById('f-shopper-name').value.trim();
+  var email = document.getElementById('f-shopper-email').value.trim();
+  var errEl = document.getElementById('submit-error');
+  errEl.style.display = 'none';
+
+  if (!name) { showError('Please enter your name.'); document.getElementById('f-shopper-name').focus(); return; }
+  if (!email || !email.includes('@')) { showError('Please enter a valid email address.'); document.getElementById('f-shopper-email').focus(); return; }
+
+  var score = calcScore();
+  var ov    = score.tm > 0 ? parseFloat((score.tp / score.tm * 100).toFixed(1)) : 0;
+
+  var data = {
+    shopperName:     name,
+    shopperEmail:    email,
+    store:           document.getElementById('f-store').value.trim() || 'Unknown Store',
+    visitDate:       document.getElementById('f-date').value,
+    visitTime:       document.getElementById('f-time').value.trim() || '—',
+    spend:           document.getElementById('f-spend').value,
+    drink:           document.getElementById('f-drink').value.trim() || '—',
+    tradeLevel:      rv('trade') || '—',
+    tmDesc:          document.getElementById('f-tm').value.trim() || '—',
+    positive:        document.getElementById('f-pos').value.trim() || '—',
+    negative:        document.getElementById('f-neg').value.trim() || '—',
+    outstandingTm:   document.getElementById('f-out').value.trim() || '—',
+    improvementArea: rv('qimp') || '—',
+    notes:           document.getElementById('f-notes').value.trim() || '—',
+    wouldReturn:     rv('qret') || '—',
+    nps:             npsVal,
+    score:           score
+  };
+
+  var reportHtml = buildReportHtml(data);
+
+  // Collect all answers as JSON
+  var answers = {};
+  SECS.forEach(function(sec){ sec.qs.forEach(function(q){ answers[q.id] = rv(q.id); }); });
+
+  var payload = {
+    shopper_name:     data.shopperName,
+    shopper_email:    data.shopperEmail,
+    store:            data.store,
+    visit_date:       data.visitDate || null,
+    visit_time:       data.visitTime,
+    spend:            data.spend || null,
+    drink:            data.drink,
+    trade_level:      data.tradeLevel,
+    team_member_desc: data.tmDesc,
+    score_total:      score.tp,
+    score_max:        score.tm,
+    score_pct:        ov,
+    nps:              npsVal,
+    would_return:     data.wouldReturn,
+    positive:         data.positive,
+    negative:         data.negative,
+    outstanding_tm:   data.outstandingTm,
+    improvement_area: data.improvementArea,
+    notes:            data.notes,
+    answers_json:     answers,
+    report_html:      reportHtml
+  };
+
+  // Show spinner
+  document.getElementById('submitting-overlay').classList.add('show');
+  document.getElementById('btn-submit').disabled = true;
+
+  try {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/submissions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      var errBody = await res.text();
+      throw new Error('Server error ' + res.status + ': ' + errBody);
+    }
+
+    // Success!
+    document.getElementById('submitting-overlay').classList.remove('show');
+    document.getElementById('form-view').style.display = 'none';
+
+    var perf = ov >= 90 ? 'Excellent' : ov >= 75 ? 'Good' : ov >= 60 ? 'Needs improvement' : 'Unsatisfactory';
+    var col  = ov >= 90 ? '#5cb800' : ov >= 75 ? '#f59e0b' : '#e03535';
+    document.getElementById('success-score-block').innerHTML =
+      '<div class="ss-label">Final score</div>' +
+      '<div class="ss-val" style="color:'+col+'">'+ov+'%</div>' +
+      '<div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">'+score.tp+' / '+score.tm+' pts &nbsp;·&nbsp; '+perf+'</div>';
+    document.getElementById('success-view').style.display = 'block';
+    window.scrollTo(0, 0);
+
+  } catch(err) {
+    document.getElementById('submitting-overlay').classList.remove('show');
+    document.getElementById('btn-submit').disabled = false;
+    showError('Submission failed: ' + err.message + '. Please check your connection and try again.');
+  }
+}
+
+function showError(msg) {
+  var el = document.getElementById('submit-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function newForm() {
+  document.getElementById('success-view').style.display = 'none';
+  document.getElementById('form-view').style.display = 'block';
+  clr();
+  window.scrollTo(0, 0);
+}
+
+function clr() {
+  document.querySelectorAll('input[type=text],input[type=number],input[type=date],input[type=email],textarea').forEach(function(e){ e.value=''; });
+  document.querySelectorAll('input[type=radio]').forEach(function(e){ e.checked=false; });
+  document.querySelectorAll('.radio-row label').forEach(function(l){ l.classList.remove('active'); });
+  document.querySelectorAll('.nps-btn').forEach(function(b){ b.classList.remove('active'); });
+  npsVal = null;
+  document.getElementById('submit-error').style.display = 'none';
+  document.getElementById('btn-submit').disabled = false;
+}
+</script>
+</body>
+</html>

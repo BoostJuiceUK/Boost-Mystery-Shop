@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boost Juice — Mystery Shop Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--green:#5cb800;--green-light:#edf7e0;--green-dark:#3d8000;--dark:#1a1a1a;--mid:#555;--muted:#888;--border:#e8e8e8;--bg:#f5f5f2;--white:#fff;--red:#e03535;--amber:#f59e0b;--radius:14px;--radius-sm:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);font-size:15px;line-height:1.5;min-height:100vh}
+
+/* ── LOGIN ── */
+#login-view{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:36px 32px;width:100%;max-width:380px;text-align:center}
+.login-logo{width:56px;height:56px;background:var(--dark);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:22px}
+.login-title{font-size:20px;font-weight:700;margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+.login-card input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:16px;outline:none;transition:border-color .15s;margin-bottom:12px;-webkit-appearance:none}
+.login-card input:focus{border-color:var(--green)}
+.btn-login{width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer}
+.login-error{color:var(--red);font-size:13px;margin-top:10px;display:none}
+
+/* ── ADMIN LAYOUT ── */
+#admin-view{display:none;min-height:100vh}
+.topbar{background:var(--dark);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:12px}
+.topbar-brand .dot{width:28px;height:28px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff}
+.topbar-brand span{font-size:15px;font-weight:600;color:#fff}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.topbar-count{font-size:12px;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace}
+.btn-logout{padding:7px 14px;background:transparent;border:1px solid rgba(255,255,255,.2);border-radius:8px;color:rgba(255,255,255,.6);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.btn-logout:hover{border-color:rgba(255,255,255,.5);color:#fff}
+
+.admin-body{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
+@media(min-width:600px){.stats-row{grid-template-columns:repeat(4,1fr)}}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px}
+.stat-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.stat-val{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:var(--dark)}
+.stat-sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* Filters */
+.filters-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.filter-input{padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;background:var(--white);outline:none;transition:border-color .15s;-webkit-appearance:none}
+.filter-input:focus{border-color:var(--green)}
+.filter-select{padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;background:var(--white);outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.results-count{font-size:13px;color:var(--muted);margin-left:auto;font-family:'DM Mono',monospace}
+
+/* Table */
+.table-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.table-head{display:grid;grid-template-columns:1fr 120px 80px 90px 110px 110px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.sub-row{display:grid;grid-template-columns:1fr 120px 80px 90px 110px 110px;padding:14px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background .1s;cursor:pointer}
+.sub-row:last-child{border-bottom:none}
+.sub-row:hover{background:#fafafa}
+.sub-store{font-weight:600;color:var(--dark);font-size:14px}
+.sub-shopper{font-size:12px;color:var(--muted);margin-top:2px}
+.sub-date{font-size:13px;color:var(--mid);font-family:'DM Mono',monospace}
+.sub-score{font-family:'DM Mono',monospace;font-size:14px;font-weight:600}
+.pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;font-family:'DM Mono',monospace}
+.pill-g{background:var(--green-light);color:var(--green-dark)}
+.pill-a{background:#fffbeb;color:#92400e}
+.pill-r{background:#fdf0f0;color:var(--red)}
+.btn-dl{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--dark);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;white-space:nowrap}
+.btn-dl:hover{background:#333}
+.btn-view{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:transparent;color:var(--mid);border:1.5px solid var(--border);border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
+.btn-view:hover{border-color:var(--mid);color:var(--dark)}
+
+/* Mobile table fallback */
+@media(max-width:700px){
+  .table-head{display:none}
+  .sub-row{grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:4px 8px;padding:14px 16px}
+  .sub-row .col-date{grid-column:1;grid-row:2}
+  .sub-row .col-score,.sub-row .col-perf{display:none}
+  .sub-row .col-dl{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+  .sub-row .col-view{display:none}
+}
+
+/* Report modal */
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;overflow-y:auto;padding:20px}
+#modal-overlay.show{display:flex;align-items:flex-start;justify-content:center}
+.modal-inner{background:var(--bg);border-radius:var(--radius);width:100%;max-width:760px;padding:20px;position:relative}
+.modal-close{position:sticky;top:0;float:right;background:var(--dark);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:16px;z-index:10}
+
+/* Loading / empty states */
+.loading-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:60px 20px}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-text{font-size:15px;color:var(--muted)}
+
+/* Print modal content */
+@media print {
+  body > *:not(#modal-overlay){display:none !important}
+  #modal-overlay{display:block !important;position:static !important;background:none !important;padding:0 !important}
+  .modal-inner{padding:0 !important;background:var(--bg) !important}
+  .modal-close,.modal-print-btn{display:none !important}
+  @page{margin:12mm;size:A4}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════ LOGIN ══════ -->
+<div id="login-view">
+  <div class="login-card">
+    <div class="login-logo">🧃</div>
+    <div class="login-title">Mystery Shop Admin</div>
+    <div class="login-sub">Boost Juice Bars · Internal use only</div>
+    <input type="password" id="pw-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()">Sign in</button>
+    <div class="login-error" id="login-error">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<!-- ══════ ADMIN ══════ -->
+<div id="admin-view">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="dot">B</div>
+      <span>Mystery Shop Admin</span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-count" id="topbar-count"></span>
+      <button class="btn-logout" onclick="logout()">Sign out</button>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Total visits</div><div class="stat-val" id="stat-total">—</div></div>
+      <div class="stat-card"><div class="stat-label">Avg score</div><div class="stat-val" id="stat-avg">—</div><div class="stat-sub" id="stat-avg-sub"></div></div>
+      <div class="stat-card"><div class="stat-label">Excellent</div><div class="stat-val" id="stat-exc" style="color:var(--green)">—</div><div class="stat-sub">≥ 90%</div></div>
+      <div class="stat-card"><div class="stat-label">Needs work</div><div class="stat-val" id="stat-fail" style="color:var(--red)">—</div><div class="stat-sub">< 75%</div></div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-row">
+      <input class="filter-input" type="text" id="filter-search" placeholder="Search store or shopper…" oninput="renderTable()">
+      <select class="filter-select" id="filter-perf" onchange="renderTable()">
+        <option value="">All scores</option>
+        <option value="excellent">Excellent (≥90%)</option>
+        <option value="good">Good (75–89%)</option>
+        <option value="needs">Needs improvement (60–74%)</option>
+        <option value="poor">Unsatisfactory (&lt;60%)</option>
+      </select>
+      <span class="results-count" id="results-count"></span>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <div class="table-head">
+        <div>Store / Shopper</div>
+        <div>Date</div>
+        <div>Score</div>
+        <div>Rating</div>
+        <div>View</div>
+        <div>Download PDF</div>
+      </div>
+      <div id="table-body">
+        <div class="loading-state"><div class="spinner"></div>Loading submissions…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL ══════ -->
+<div id="modal-overlay">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeModal()">✕ Close</button>
+    <button class="modal-print-btn btn-dl" onclick="window.print()" style="float:right;margin-right:10px;margin-bottom:16px">⬇ Save as PDF</button>
+    <div style="clear:both"></div>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+var SUPABASE_URL = 'https://muwlyszxjuzpjramhcvi.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_2QIQ7D95eNrFNlbv8j934g_lA1EQCkM';
+var ADMIN_PW     = 'Rocky2505!Millies';
+var allData      = [];
+
+function doLogin() {
+  var pw = document.getElementById('pw-input').value;
+  if (pw === ADMIN_PW) {
+    document.getElementById('login-view').style.display  = 'none';
+    document.getElementById('admin-view').style.display  = 'block';
+    loadSubmissions();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+function logout() {
+  document.getElementById('admin-view').style.display  = 'none';
+  document.getElementById('login-view').style.display  = 'flex';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('login-error').style.display = 'none';
+  allData = [];
+}
+
+async function loadSubmissions() {
+  try {
+    var res = await fetch(
+      SUPABASE_URL + '/rest/v1/submissions?select=*&order=created_at.desc',
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
+    );
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    allData = await res.json();
+    renderStats();
+    renderTable();
+  } catch(e) {
+    document.getElementById('table-body').innerHTML =
+      '<div class="loading-state" style="color:var(--red)">Failed to load: ' + e.message + '</div>';
+  }
+}
+
+function renderStats() {
+  var n = allData.length;
+  document.getElementById('stat-total').textContent = n;
+  document.getElementById('topbar-count').textContent = n + ' submission' + (n !== 1 ? 's' : '');
+  if (n === 0) { document.getElementById('stat-avg').textContent = '—'; return; }
+  var avg = allData.reduce(function(s,r){ return s + (r.score_pct||0); }, 0) / n;
+  document.getElementById('stat-avg').textContent = avg.toFixed(1) + '%';
+  document.getElementById('stat-avg-sub').textContent = avg >= 90 ? 'Excellent' : avg >= 75 ? 'Good' : avg >= 60 ? 'Needs improvement' : 'Unsatisfactory';
+  document.getElementById('stat-exc').textContent  = allData.filter(function(r){ return r.score_pct >= 90; }).length;
+  document.getElementById('stat-fail').textContent = allData.filter(function(r){ return r.score_pct < 75; }).length;
+}
+
+function perfClass(p) { return p >= 90 ? 'pill-g' : p >= 75 ? 'pill-a' : 'pill-r'; }
+function perfLabel(p) { return p >= 90 ? 'Excellent' : p >= 75 ? 'Good' : p >= 60 ? 'Needs improvement' : 'Unsatisfactory'; }
+function fmtDate(d)   { if(!d) return '—'; try { return new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); } catch(e){ return d; } }
+
+function renderTable() {
+  var search = document.getElementById('filter-search').value.toLowerCase();
+  var perf   = document.getElementById('filter-perf').value;
+
+  var filtered = allData.filter(function(r) {
+    var matchSearch = !search ||
+      (r.store||'').toLowerCase().includes(search) ||
+      (r.shopper_name||'').toLowerCase().includes(search) ||
+      (r.shopper_email||'').toLowerCase().includes(search);
+    var p = r.score_pct || 0;
+    var matchPerf = !perf ||
+      (perf === 'excellent' && p >= 90) ||
+      (perf === 'good'      && p >= 75 && p < 90) ||
+      (perf === 'needs'     && p >= 60 && p < 75) ||
+      (perf === 'poor'      && p < 60);
+    return matchSearch && matchPerf;
+  });
+
+  document.getElementById('results-count').textContent = filtered.length + ' result' + (filtered.length !== 1 ? 's' : '');
+
+  if (filtered.length === 0) {
+    document.getElementById('table-body').innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">No submissions match your filters.</div></div>';
+    return;
+  }
+
+  var html = '';
+  filtered.forEach(function(r) {
+    var p   = r.score_pct || 0;
+    var col = p >= 90 ? 'var(--green)' : p >= 75 ? 'var(--amber)' : 'var(--red)';
+    html += '<div class="sub-row">';
+    html += '<div><div class="sub-store">' + esc(r.store || 'Unknown Store') + '</div><div class="sub-shopper">' + esc(r.shopper_name || '') + (r.shopper_email ? ' · ' + esc(r.shopper_email) : '') + '</div></div>';
+    html += '<div class="col-date sub-date">' + fmtDate(r.visit_date) + '</div>';
+    html += '<div class="col-score sub-score" style="color:' + col + '">' + p.toFixed(1) + '%</div>';
+    html += '<div class="col-perf"><span class="pill ' + perfClass(p) + '">' + perfLabel(p) + '</span></div>';
+    html += '<div class="col-view"><button class="btn-view" onclick="viewReport(\'' + r.id + '\')">👁 View</button></div>';
+    html += '<div class="col-dl"><button class="btn-dl" onclick="downloadPdf(\'' + r.id + '\',\'' + esc(r.store||'Store') + '\',\'' + (r.visit_date||'') + '\')">⬇ PDF</button></div>';
+    html += '</div>';
+  });
+  document.getElementById('table-body').innerHTML = html;
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function findRow(id) { return allData.find(function(r){ return r.id === id; }); }
+
+function viewReport(id) {
+  var r = findRow(id);
+  if (!r || !r.report_html) { alert('Report HTML not found for this submission.'); return; }
+  document.getElementById('modal-content').innerHTML = r.report_html;
+  document.getElementById('modal-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function downloadPdf(id, store, visitDate) {
+  var r = findRow(id);
+  if (!r || !r.report_html) { alert('No report found.'); return; }
+
+  // Open a new window with just the report HTML + print styles, then trigger print
+  var dateStr = visitDate ? new Date(visitDate+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'}).replace(/\//g,'-') : 'No-Date';
+  var title   = (store || 'Store') + ' - ' + dateStr + ' - Mystery Shop';
+
+  var win = window.open('', '_blank');
+  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + title + '</title>');
+  win.document.write('<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">');
+  win.document.write('<style>');
+  win.document.write('*{box-sizing:border-box;margin:0;padding:0} body{font-family:"DM Sans",sans-serif;background:#f5f5f2;padding:20px;font-size:15px;color:#1a1a1a}');
+  win.document.write('@media print{@page{margin:12mm;size:A4} *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important} body{padding:0}}');
+  win.document.write('</style></head><body>');
+  win.document.write(r.report_html);
+  win.document.write('<script>window.onload=function(){setTimeout(function(){window.print();},600)}<\/script>');
+  win.document.write('</body></html>');
+  win.document.close();
+}
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Enter key on password field
+document.getElementById('pw-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>
