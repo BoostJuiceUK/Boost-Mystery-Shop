@@ -51,8 +51,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
 
 /* Table */
 .table-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.table-head{display:grid;grid-template-columns:1fr 120px 80px 90px 110px 110px 80px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
-.sub-row{display:grid;grid-template-columns:1fr 120px 80px 90px 110px 110px 80px;padding:14px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background .1s;cursor:pointer}
+.table-head{display:grid;grid-template-columns:1fr 120px 80px 90px 100px 100px 90px 80px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.sub-row{display:grid;grid-template-columns:1fr 120px 80px 90px 100px 100px 90px 80px;padding:14px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background .1s;cursor:pointer}
 .sub-row:last-child{border-bottom:none}
 .sub-row:hover{background:#fafafa}
 .sub-store{font-weight:600;color:var(--dark);font-size:14px}
@@ -69,6 +69,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
 .btn-view:hover{border-color:var(--mid);color:var(--dark)}
 .btn-del{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:transparent;color:var(--red);border:1.5px solid #f5c6c6;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
 .btn-del:hover{background:#fdf0f0;border-color:var(--red)}
+.btn-note{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:transparent;color:#92400e;border:1.5px solid #f0d080;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
+.btn-note:hover{background:#fffbf0;border-color:var(--amber)}
+.btn-note.has-note{background:#fffbeb;border-color:var(--amber);color:#7a5200}
+.note-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:20px}
+.note-modal.show{display:flex}
+.note-inner{background:var(--white);border-radius:var(--radius);width:100%;max-width:480px;padding:24px}
+.note-title{font-size:16px;font-weight:700;margin-bottom:4px}
+.note-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+.note-inner textarea{width:100%;height:140px;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;resize:vertical;outline:none;transition:border-color .15s}
+.note-inner textarea:focus{border-color:var(--amber)}
+.note-btns{display:flex;gap:10px;margin-top:12px}
+.btn-save-note{flex:1;padding:12px;background:var(--dark);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.btn-cancel-note{padding:12px 20px;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
+.sub-note-preview{font-size:11px;color:#92600a;margin-top:3px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
 
 /* Mobile table fallback */
 @media(max-width:700px){
@@ -164,11 +178,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
         <div>Rating</div>
         <div>View</div>
         <div>Download PDF</div>
+        <div>Notes</div>
         <div>Delete</div>
       </div>
       <div id="table-body">
         <div class="loading-state"><div class="spinner"></div>Loading submissions…</div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ NOTE MODAL ══════ -->
+<div class="note-modal" id="note-modal">
+  <div class="note-inner">
+    <div class="note-title">Admin Notes</div>
+    <div class="note-sub" id="note-sub">Add internal notes for this visit</div>
+    <textarea id="note-textarea" placeholder="e.g. Followed up with store manager. Team briefed on VIBE Club protocol…"></textarea>
+    <div class="note-btns">
+      <button class="btn-save-note" onclick="saveNote()">Save note</button>
+      <button class="btn-cancel-note" onclick="closeNote()">Cancel</button>
     </div>
   </div>
 </div>
@@ -278,6 +306,7 @@ function renderTable() {
     html += '<div class="col-perf"><span class="pill ' + perfClass(p) + '">' + perfLabel(p) + '</span></div>';
     html += '<div class="col-view"><button class="btn-view" onclick="viewReport(\'' + r.id + '\')">👁 View</button></div>';
     html += '<div class="col-dl"><button class="btn-dl" onclick="downloadPdf(\'' + r.id + '\',\'' + esc(r.store||'Store') + '\',\'' + (r.visit_date||'') + '\')">⬇ PDF</button></div>';
+    html += '<div class="col-note"><button class="btn-note' + (r.admin_notes ? ' has-note' : '') + '" onclick="openNote(\'' + r.id + '\')">📝 ' + (r.admin_notes ? 'Edit' : 'Add') + '</button>' + (r.admin_notes ? '<div class="sub-note-preview">' + esc(r.admin_notes.substring(0,40)) + (r.admin_notes.length>40?'…':'') + '</div>' : '') + '</div>';
     html += '<div class="col-del"><button class="btn-del" onclick="confirmDelete(\'' + r.id + '\',\'' + esc(r.store||'Store') + '\',\'' + esc(r.shopper_name||'') + '\')">🗑 Delete</button></div>';
     html += '</div>';
   });
@@ -316,8 +345,15 @@ function downloadPdf(id, store, visitDate) {
   win.document.write('*{box-sizing:border-box;margin:0;padding:0} body{font-family:"DM Sans",sans-serif;background:#f5f5f2;padding:20px;font-size:15px;color:#1a1a1a}');
   win.document.write('@media print{@page{margin:12mm;size:A4} *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important} body{padding:0}}');
   win.document.write('</style></head><body>');
+  // Strip shopper name/email row from PDF output
+  var pdfHtml = r.report_html.replace(/<div style="padding:13px 18px;border-bottom:1px solid #e8e8e8[^"]*"><div style="font-size:10px[^<]*<\/div><div style="font-size:14px[^<]*>(?:[^<]|<(?!\/div>))*(?:Shopper|shopper)[^<]*<\/div><\/div>/g, '');
+  // Simpler approach: hide any block containing shopper email pattern via CSS
+  win.document.write('<style>.pdf-hide-shopper{display:none!important}</style>');
   win.document.write(r.report_html);
-  win.document.write('<script>window.onload=function(){setTimeout(function(){window.print();},600)}<\/script>');
+  win.document.write('<script>');
+  win.document.write('document.querySelectorAll("div").forEach(function(d){if(d.textContent.includes("@")&&d.style&&d.style.padding==="13px 18px"){var label=d.querySelector("div");if(label&&label.textContent.toLowerCase().includes("shopper"))d.style.display="none";}});');
+  win.document.write('window.onload=function(){setTimeout(function(){window.print();},600)};');
+  win.document.write('<\/script>');
   win.document.write('</body></html>');
   win.document.close();
 }
@@ -350,6 +386,53 @@ async function deleteSubmission(id) {
     alert('Delete failed: ' + e.message);
   }
 }
+
+var currentNoteId = null;
+
+function openNote(id) {
+  var r = findRow(id);
+  if (!r) return;
+  currentNoteId = id;
+  document.getElementById('note-sub').textContent = esc(r.store || 'Unknown Store') + (r.visit_date ? ' · ' + fmtDate(r.visit_date) : '');
+  document.getElementById('note-textarea').value = r.admin_notes || '';
+  document.getElementById('note-modal').classList.add('show');
+  setTimeout(function(){ document.getElementById('note-textarea').focus(); }, 100);
+}
+
+function closeNote() {
+  document.getElementById('note-modal').classList.remove('show');
+  currentNoteId = null;
+}
+
+async function saveNote() {
+  if (!currentNoteId) return;
+  var notes = document.getElementById('note-textarea').value.trim();
+  try {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/submissions?id=eq.' + currentNoteId, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ admin_notes: notes })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    // Update local data
+    var row = findRow(currentNoteId);
+    if (row) row.admin_notes = notes;
+    closeNote();
+    renderTable();
+  } catch(e) {
+    alert('Failed to save note: ' + e.message);
+  }
+}
+
+// Close note modal on overlay click
+document.getElementById('note-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeNote();
+});
 
 // Close modal on overlay click
 document.getElementById('modal-overlay').addEventListener('click', function(e) {
