@@ -320,7 +320,7 @@ textarea{min-height:88px;resize:vertical}
 </div>
 
 <script>
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxLGtXjMtEhNiLbLhYKiRLLvLw4qrxD51P7HpB8r71kxCcJ-8MzGqVvH1c97Ve4OLut2w/exec';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9aJ7z6R-dxehFS7hG4hj213XMVE0XaYIfSx2b7Az0MuAoGqQs1HpGbT3t89yYx_gtog/exec';
 
 var npsVal = null;
 
@@ -571,7 +571,10 @@ async function submitForm() {
     params.append('action', 'submit');
     params.append('data', JSON.stringify(payload));
 
-    var res = await fetch(SCRIPT_URL + '?' + params.toString());
+    var res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: params
+    });
     var result = await res.json();
     if (result.status !== 'success') throw new Error(result.message || 'Unknown error');
 
