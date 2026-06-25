@@ -9,8 +9,6 @@
 :root{--green:#5cb800;--green-light:#edf7e0;--green-dark:#3d8000;--dark:#1a1a1a;--mid:#555;--muted:#888;--border:#e8e8e8;--bg:#f5f5f2;--white:#fff;--red:#e03535;--amber:#f59e0b;--radius:14px;--radius-sm:10px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);font-size:15px;line-height:1.5;min-height:100vh}
-
-/* ── LOGIN ── */
 #login-view{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
 .login-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);padding:36px 32px;width:100%;max-width:380px;text-align:center}
 .login-logo{width:56px;height:56px;background:var(--dark);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:22px}
@@ -20,8 +18,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
 .login-card input:focus{border-color:var(--green)}
 .btn-login{width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:16px;font-weight:600;cursor:pointer}
 .login-error{color:var(--red);font-size:13px;margin-top:10px;display:none}
-
-/* ── ADMIN LAYOUT ── */
 #admin-view{display:none;min-height:100vh}
 .topbar{background:var(--dark);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
 .topbar-brand{display:flex;align-items:center;gap:12px}
@@ -31,25 +27,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
 .topbar-count{font-size:12px;color:rgba(255,255,255,.45);font-family:'DM Mono',monospace}
 .btn-logout{padding:7px 14px;background:transparent;border:1px solid rgba(255,255,255,.2);border-radius:8px;color:rgba(255,255,255,.6);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
 .btn-logout:hover{border-color:rgba(255,255,255,.5);color:#fff}
-
 .admin-body{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
-
-/* Stats row */
 .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
 @media(min-width:600px){.stats-row{grid-template-columns:repeat(4,1fr)}}
 .stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px}
 .stat-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .stat-val{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:var(--dark)}
 .stat-sub{font-size:12px;color:var(--muted);margin-top:2px}
-
-/* Filters */
 .filters-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
 .filter-input{padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;background:var(--white);outline:none;transition:border-color .15s;-webkit-appearance:none}
 .filter-input:focus{border-color:var(--green)}
 .filter-select{padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;background:var(--white);outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
 .results-count{font-size:13px;color:var(--muted);margin-left:auto;font-family:'DM Mono',monospace}
-
-/* Table */
 .table-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
 .table-head{display:grid;grid-template-columns:1fr 120px 80px 90px 100px 100px 90px 80px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
 .sub-row{display:grid;grid-template-columns:1fr 120px 80px 90px 100px 100px 90px 80px;padding:14px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background .1s;cursor:pointer}
@@ -83,8 +72,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
 .btn-save-note{flex:1;padding:12px;background:var(--dark);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
 .btn-cancel-note{padding:12px 20px;background:transparent;color:var(--muted);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
 .sub-note-preview{font-size:11px;color:#92600a;margin-top:3px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
-
-/* Mobile table fallback */
 @media(max-width:700px){
   .table-head{display:none}
   .sub-row{grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:4px 8px;padding:14px 16px}
@@ -94,23 +81,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
   .sub-row .col-view{display:none}
   .sub-row .col-del{grid-column:2;grid-row:2;display:flex;align-items:flex-end}
 }
-
-/* Report modal */
 #modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;overflow-y:auto;padding:20px}
 #modal-overlay.show{display:flex;align-items:flex-start;justify-content:center}
 .modal-inner{background:var(--bg);border-radius:var(--radius);width:100%;max-width:760px;padding:20px;position:relative}
 .modal-close{position:sticky;top:0;float:right;background:var(--dark);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:16px;z-index:10}
-
-/* Loading / empty states */
 .loading-state{text-align:center;padding:60px 20px;color:var(--muted)}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .empty-state{text-align:center;padding:60px 20px}
 .empty-icon{font-size:40px;margin-bottom:12px}
 .empty-text{font-size:15px;color:var(--muted)}
-
-/* Print modal content */
-@media print {
+@media print{
   body > *:not(#modal-overlay){display:none !important}
   #modal-overlay{display:block !important;position:static !important;background:none !important;padding:0 !important}
   .modal-inner{padding:0 !important;background:var(--bg) !important}
@@ -122,7 +103,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
 </head>
 <body>
 
-<!-- ══════ LOGIN ══════ -->
 <div id="login-view">
   <div class="login-card">
     <div class="login-logo">🧃</div>
@@ -134,7 +114,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
   </div>
 </div>
 
-<!-- ══════ ADMIN ══════ -->
 <div id="admin-view">
   <div class="topbar">
     <div class="topbar-brand">
@@ -148,7 +127,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
   </div>
 
   <div class="admin-body">
-    <!-- Stats -->
     <div class="stats-row">
       <div class="stat-card"><div class="stat-label">Total visits</div><div class="stat-val" id="stat-total">—</div></div>
       <div class="stat-card"><div class="stat-label">Avg score</div><div class="stat-val" id="stat-avg">—</div><div class="stat-sub" id="stat-avg-sub"></div></div>
@@ -156,7 +134,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
       <div class="stat-card"><div class="stat-label">Needs work</div><div class="stat-val" id="stat-fail" style="color:var(--red)">—</div><div class="stat-sub">< 75%</div></div>
     </div>
 
-    <!-- Filters -->
     <div class="filters-row">
       <input class="filter-input" type="text" id="filter-search" placeholder="Search store or shopper…" oninput="renderTable()">
       <select class="filter-select" id="filter-perf" onchange="renderTable()">
@@ -169,7 +146,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
       <span class="results-count" id="results-count"></span>
     </div>
 
-    <!-- Table -->
     <div class="table-wrap">
       <div class="table-head">
         <div>Store / Shopper</div>
@@ -188,7 +164,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
   </div>
 </div>
 
-<!-- ══════ NOTE MODAL ══════ -->
 <div class="note-modal" id="note-modal">
   <div class="note-inner">
     <div class="note-title">Admin Notes</div>
@@ -201,7 +176,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
   </div>
 </div>
 
-<!-- ══════ MODAL ══════ -->
 <div id="modal-overlay">
   <div class="modal-inner">
     <button class="modal-close" onclick="closeModal()">✕ Close</button>
@@ -212,10 +186,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
 </div>
 
 <script>
-var SUPABASE_URL = 'https://muwlyszxjuzpjramhcvi.supabase.co';
-var SUPABASE_KEY = 'sb_publishable_2QIQ7D95eNrFNlbv8j934g_lA1EQCkM';
-var ADMIN_PW     = 'TD4';
-var allData      = [];
+// ── REPLACE THESE with your own values ──
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuGHkzrxuB_BKyPUbnZfy9AYUGXmKNXLFfi-d3yhls4tYXi9R9nPDMaJ4yAe3S00FO/exec';
+var ADMIN_PW   = 'TD4';
+
+var allData = [];
 
 function doLogin() {
   var pw = document.getElementById('pw-input').value;
@@ -240,12 +215,11 @@ function logout() {
 
 async function loadSubmissions() {
   try {
-    var res = await fetch(
-      SUPABASE_URL + '/rest/v1/submissions?select=*&order=created_at.desc',
-      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
-    );
+    var res = await fetch(SCRIPT_URL + '?action=getAll');
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    allData = await res.json();
+    var result = await res.json();
+    if (result.status !== 'success') throw new Error(result.message || 'Unknown error');
+    allData = result.data;
     renderStats();
     renderTable();
   } catch(e) {
@@ -259,11 +233,11 @@ function renderStats() {
   document.getElementById('stat-total').textContent = n;
   document.getElementById('topbar-count').textContent = n + ' submission' + (n !== 1 ? 's' : '');
   if (n === 0) { document.getElementById('stat-avg').textContent = '—'; return; }
-  var avg = allData.reduce(function(s,r){ return s + (r.score_pct||0); }, 0) / n;
+  var avg = allData.reduce(function(s,r){ return s + (parseFloat(r.score_pct)||0); }, 0) / n;
   document.getElementById('stat-avg').textContent = avg.toFixed(1) + '%';
   document.getElementById('stat-avg-sub').textContent = avg >= 90 ? 'Excellent' : avg >= 75 ? 'Good' : avg >= 60 ? 'Needs improvement' : 'Unsatisfactory';
-  document.getElementById('stat-exc').textContent  = allData.filter(function(r){ return r.score_pct >= 90; }).length;
-  document.getElementById('stat-fail').textContent = allData.filter(function(r){ return r.score_pct < 75; }).length;
+  document.getElementById('stat-exc').textContent  = allData.filter(function(r){ return parseFloat(r.score_pct) >= 90; }).length;
+  document.getElementById('stat-fail').textContent = allData.filter(function(r){ return parseFloat(r.score_pct) < 75; }).length;
 }
 
 function perfClass(p) { return p >= 90 ? 'pill-g' : p >= 75 ? 'pill-a' : 'pill-r'; }
@@ -279,7 +253,7 @@ function renderTable() {
       (r.store||'').toLowerCase().includes(search) ||
       (r.shopper_name||'').toLowerCase().includes(search) ||
       (r.shopper_email||'').toLowerCase().includes(search);
-    var p = r.score_pct || 0;
+    var p = parseFloat(r.score_pct) || 0;
     var matchPerf = !perf ||
       (perf === 'excellent' && p >= 90) ||
       (perf === 'good'      && p >= 75 && p < 90) ||
@@ -297,25 +271,25 @@ function renderTable() {
 
   var html = '';
   filtered.forEach(function(r) {
-    var p   = r.score_pct || 0;
+    var p   = parseFloat(r.score_pct) || 0;
     var col = p >= 90 ? 'var(--green)' : p >= 75 ? 'var(--amber)' : 'var(--red)';
     html += '<div class="sub-row">';
     html += '<div><div class="sub-store">' + esc(r.store || 'Unknown Store') + '</div><div class="sub-shopper">' + esc(r.shopper_name || '') + (r.shopper_email ? ' · ' + esc(r.shopper_email) : '') + '</div></div>';
     html += '<div class="col-date sub-date">' + fmtDate(r.visit_date) + '</div>';
     html += '<div class="col-score sub-score" style="color:' + col + '">' + p.toFixed(1) + '%</div>';
     html += '<div class="col-perf"><span class="pill ' + perfClass(p) + '">' + perfLabel(p) + '</span></div>';
-    html += '<div class="col-view"><button class="btn-view" onclick="viewReport(\'' + r.id + '\')">👁 View</button></div>';
-    html += '<div class="col-dl"><button class="btn-dl" onclick="downloadPdf(\'' + r.id + '\',\'' + esc(r.store||'Store') + '\',\'' + (r.visit_date||'') + '\')">⬇ PDF</button></div>';
-    html += '<div class="col-note"><button class="btn-note' + (r.admin_notes ? ' has-note' : '') + '" onclick="openNote(\'' + r.id + '\')">📝 ' + (r.admin_notes ? 'Edit' : 'Add') + '</button>' + (r.admin_notes ? '<div class="sub-note-preview">' + esc(r.admin_notes.substring(0,40)) + (r.admin_notes.length>40?'…':'') + '</div>' : '') + '</div>';
-    html += '<div class="col-del"><button class="btn-del" onclick="confirmDelete(\'' + r.id + '\',\'' + esc(r.store||'Store') + '\',\'' + esc(r.shopper_name||'') + '\')">🗑 Delete</button></div>';
+    html += '<div class="col-view"><button class="btn-view" onclick="viewReport(\'' + esc(r.row_id) + '\')">👁 View</button></div>';
+    html += '<div class="col-dl"><button class="btn-dl" onclick="downloadPdf(\'' + esc(r.row_id) + '\',\'' + esc(r.store||'Store') + '\',\'' + (r.visit_date||'') + '\')">⬇ PDF</button></div>';
+    html += '<div class="col-note"><button class="btn-note' + (r.admin_notes ? ' has-note' : '') + '" onclick="openNote(\'' + esc(r.row_id) + '\')">📝 ' + (r.admin_notes ? 'Edit' : 'Add') + '</button>' + (r.admin_notes ? '<div class="sub-note-preview">' + esc(r.admin_notes.substring(0,40)) + (r.admin_notes.length>40?'…':'') + '</div>' : '') + '</div>';
+    html += '<div class="col-del"><button class="btn-del" onclick="confirmDelete(\'' + esc(r.row_id) + '\',\'' + esc(r.store||'Store') + '\',\'' + esc(r.shopper_name||'') + '\')">🗑 Delete</button></div>';
     html += '</div>';
   });
   document.getElementById('table-body').innerHTML = html;
 }
 
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 
-function findRow(id) { return allData.find(function(r){ return r.id === id; }); }
+function findRow(id) { return allData.find(function(r){ return r.row_id === id; }); }
 
 function viewReport(id) {
   var r = findRow(id);
@@ -333,11 +307,8 @@ function closeModal() {
 function downloadPdf(id, store, visitDate) {
   var r = findRow(id);
   if (!r || !r.report_html) { alert('No report found.'); return; }
-
-  // Open a new window with just the report HTML + print styles, then trigger print
   var dateStr = visitDate ? new Date(visitDate+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'}).replace(/\//g,'-') : 'No-Date';
   var title   = (store || 'Store') + ' - ' + dateStr + ' - Mystery Shop';
-
   var win = window.open('', '_blank');
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + title + '</title>');
   win.document.write('<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">');
@@ -345,41 +316,25 @@ function downloadPdf(id, store, visitDate) {
   win.document.write('*{box-sizing:border-box;margin:0;padding:0} body{font-family:"DM Sans",sans-serif;background:#f5f5f2;padding:20px;font-size:15px;color:#1a1a1a}');
   win.document.write('@media print{@page{margin:12mm;size:A4} *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important} body{padding:0}}');
   win.document.write('</style></head><body>');
-  // Strip shopper name/email row from PDF output
-  var pdfHtml = r.report_html.replace(/<div style="padding:13px 18px;border-bottom:1px solid #e8e8e8[^"]*"><div style="font-size:10px[^<]*<\/div><div style="font-size:14px[^<]*>(?:[^<]|<(?!\/div>))*(?:Shopper|shopper)[^<]*<\/div><\/div>/g, '');
-  // Simpler approach: hide any block containing shopper email pattern via CSS
-  win.document.write('<style>.pdf-hide-shopper{display:none!important}</style>');
   win.document.write(r.report_html);
-  win.document.write('<script>');
-  win.document.write('document.querySelectorAll("div").forEach(function(d){if(d.textContent.includes("@")&&d.style&&d.style.padding==="13px 18px"){var label=d.querySelector("div");if(label&&label.textContent.toLowerCase().includes("shopper"))d.style.display="none";}});');
-  win.document.write('window.onload=function(){setTimeout(function(){window.print();},600)};');
-  win.document.write('<\/script>');
+  win.document.write('<script>window.onload=function(){setTimeout(function(){window.print();},600)};<\/script>');
   win.document.write('</body></html>');
   win.document.close();
 }
 
 async function confirmDelete(id, store, shopperName) {
-  var msg = 'Delete this submission?\n\n' +
-            'Store: ' + store + '\n' +
-            'Shopper: ' + (shopperName || 'Unknown') + '\n\n' +
-            'This cannot be undone.';
+  var msg = 'Delete this submission?\n\nStore: ' + store + '\nShopper: ' + (shopperName || 'Unknown') + '\n\nThis cannot be undone.';
   if (!confirm(msg)) return;
   await deleteSubmission(id);
 }
 
 async function deleteSubmission(id) {
   try {
-    var res = await fetch(SUPABASE_URL + '/rest/v1/submissions?id=eq.' + id, {
-      method: 'DELETE',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Prefer': 'return=minimal'
-      }
-    });
+    var res = await fetch(SCRIPT_URL + '?action=delete&row_id=' + encodeURIComponent(id));
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    // Remove from local array and re-render
-    allData = allData.filter(function(r){ return r.id !== id; });
+    var result = await res.json();
+    if (result.status !== 'success') throw new Error(result.message || 'Delete failed');
+    allData = allData.filter(function(r){ return r.row_id !== id; });
     renderStats();
     renderTable();
   } catch(e) {
@@ -393,7 +348,7 @@ function openNote(id) {
   var r = findRow(id);
   if (!r) return;
   currentNoteId = id;
-  document.getElementById('note-sub').textContent = esc(r.store || 'Unknown Store') + (r.visit_date ? ' · ' + fmtDate(r.visit_date) : '');
+  document.getElementById('note-sub').textContent = (r.store || 'Unknown Store') + (r.visit_date ? ' · ' + fmtDate(r.visit_date) : '');
   document.getElementById('note-textarea').value = r.admin_notes || '';
   document.getElementById('note-modal').classList.add('show');
   setTimeout(function(){ document.getElementById('note-textarea').focus(); }, 100);
@@ -408,18 +363,10 @@ async function saveNote() {
   if (!currentNoteId) return;
   var notes = document.getElementById('note-textarea').value.trim();
   try {
-    var res = await fetch(SUPABASE_URL + '/rest/v1/submissions?id=eq.' + currentNoteId, {
-      method: 'PATCH',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ admin_notes: notes })
-    });
+    var res = await fetch(SCRIPT_URL + '?action=updateNote&row_id=' + encodeURIComponent(currentNoteId) + '&notes=' + encodeURIComponent(notes));
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    // Update local data
+    var result = await res.json();
+    if (result.status !== 'success') throw new Error(result.message || 'Save failed');
     var row = findRow(currentNoteId);
     if (row) row.admin_notes = notes;
     closeNote();
@@ -429,20 +376,9 @@ async function saveNote() {
   }
 }
 
-// Close note modal on overlay click
-document.getElementById('note-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeNote();
-});
-
-// Close modal on overlay click
-document.getElementById('modal-overlay').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
-// Enter key on password field
-document.getElementById('pw-input').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') doLogin();
-});
+document.getElementById('note-modal').addEventListener('click', function(e) { if (e.target === this) closeNote(); });
+document.getElementById('modal-overlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+document.getElementById('pw-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
 </script>
 </body>
 </html>
