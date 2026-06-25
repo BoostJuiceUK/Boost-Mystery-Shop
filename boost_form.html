@@ -112,7 +112,7 @@ textarea{min-height:88px;resize:vertical}
     <div class="hero-bar">
       <div class="hero-stat"><div class="sl">Sections</div><div class="sv">7</div></div>
       <div class="hero-stat"><div class="sl">Questions</div><div class="sv">20</div></div>
-      <div class="hero-stat"><div class="sl">Total pts</div><div class="sv">28</div></div>
+      <div class="hero-stat"><div class="sl">Total pts</div><div class="sv">27</div></div>
     </div>
   </div>
 
@@ -242,11 +242,20 @@ textarea{min-height:88px;resize:vertical}
 
   <!-- S6 -->
   <div class="section-block">
-    <div class="section-head"><div class="sec-num">6</div><h2>Drink quality</h2><span class="sec-pts">3 pts</span></div>
+    <div class="section-head"><div class="sec-num">6</div><h2>Drink quality</h2><span class="sec-pts">2 pts</span></div>
     <div class="field"><div class="field-label">Cup filled correctly (near top)? <span class="pts-tag">1 pt</span></div><div class="radio-row"><label><input type="radio" name="q17" value="1">Yes</label><label><input type="radio" name="q17" value="0">No</label></div></div>
-    <div class="field"><div class="field-label">If smoothie — thick, lava-like consistency? <span class="pts-tag">1 pt</span></div><div class="field-hint">Select N/A if you didn't order a smoothie — no points deducted.</div><div class="radio-row"><label><input type="radio" name="q18" value="1">Yes</label><label><input type="radio" name="q18" value="0">No</label><label><input type="radio" name="q18" value="na">N/A</label></div></div>
-    <div class="field"><div class="field-label">If Crush — proper slushie consistency? <span class="pts-tag">1 pt</span></div><div class="field-hint">Select N/A if you didn't order a Crush.</div><div class="radio-row"><label><input type="radio" name="q18b" value="1">Yes</label><label><input type="radio" name="q18b" value="0">No</label><label><input type="radio" name="q18b" value="na">N/A</label></div></div>
-    <div class="field"><div class="field-label">If juice — were you asked if you'd like ice? <span class="pts-tag">1 pt</span></div><div class="field-hint">Select N/A if you didn't order a juice.</div><div class="radio-row"><label><input type="radio" name="q18c" value="1">Yes</label><label><input type="radio" name="q18c" value="0">No</label><label><input type="radio" name="q18c" value="na">N/A</label></div></div>
+    <div class="field">
+      <div class="field-label">Drink served to correct consistency / standard? <span class="pts-tag">1 pt</span></div>
+      <div class="field-hint">Select the option that matches your drink type.</div>
+      <div class="radio-row" style="flex-direction:column">
+        <label><input type="radio" name="q18" value="1">Smoothie — thick, lava-like consistency ✓</label>
+        <label><input type="radio" name="q18" value="0">Smoothie — too thin / watery ✗</label>
+        <label><input type="radio" name="q18" value="1">Crush — proper slushie consistency ✓</label>
+        <label><input type="radio" name="q18" value="0">Crush — incorrect consistency ✗</label>
+        <label><input type="radio" name="q18" value="1">Juice — asked about ice ✓</label>
+        <label><input type="radio" name="q18" value="0">Juice — not asked about ice ✗</label>
+      </div>
+    </div>
   </div>
 
   <!-- S7 -->
@@ -308,7 +317,7 @@ textarea{min-height:88px;resize:vertical}
 
 <script>
 // ── REPLACE THIS URL with your deployed Google Apps Script Web App URL ──
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuGHkzrxuB_BKyPUbnZfy9AYUGXmKNXLFfi-d3yhls4tYXi9R9nPDMaJ4yAe3S00FO/exec';
+var SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 
 var npsVal = null;
 
@@ -362,9 +371,7 @@ var SECS = [
   {name:'5. Delivery time',qs:[{id:'q15',label:'Order within target time',max:2}]},
   {name:'6. Drink quality',qs:[
     {id:'q17',label:'Cup filled correctly',max:1},
-    {id:'q18',label:'Smoothie consistency (if applicable)',max:1,optional:true},
-    {id:'q18b',label:'Crush consistency (if applicable)',max:1,optional:true},
-    {id:'q18c',label:'Juice — asked about ice (if applicable)',max:1,optional:true}
+    {id:'q18',label:'Drink served to correct consistency / standard',max:1}
   ]},
   {name:'7. Team members',qs:[
     {id:'q19',label:'Clean branded uniform',max:1},
