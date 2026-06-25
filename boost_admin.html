@@ -187,8 +187,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
 
 <script>
 // ── REPLACE THESE with your own values ──
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx29ISquF0KQxSwSzW4GV9LQclr1ssb6BZ_iJP9lXYThLMMurwI8_Ssc6tz24E6b_tnkA/exec';
-var ADMIN_PW   = 'TD4';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxLGtXjMtEhNiLbLhYKiRLLvLw4qrxD51P7HpB8r71kxCcJ-8MzGqVvH1c97Ve4OLut2w/exec';
+var ADMIN_PW   = 'YOUR_ADMIN_PASSWORD_HERE';
 
 var allData = [];
 
@@ -215,7 +215,7 @@ function logout() {
 
 async function loadSubmissions() {
   try {
-    var res = await fetch(SCRIPT_URL + '?action=getAll');
+    var res = await fetch(SCRIPT_URL + '?reqAction=getAll');
     if (!res.ok) throw new Error('HTTP ' + res.status);
     var result = await res.json();
     if (result.status !== 'success') throw new Error(result.message || 'Unknown error');
@@ -330,7 +330,7 @@ async function confirmDelete(id, store, shopperName) {
 
 async function deleteSubmission(id) {
   try {
-    var res = await fetch(SCRIPT_URL + '?action=delete&row_id=' + encodeURIComponent(id));
+    var res = await fetch(SCRIPT_URL + '?reqAction=delete&row_id=' + encodeURIComponent(id));
     if (!res.ok) throw new Error('HTTP ' + res.status);
     var result = await res.json();
     if (result.status !== 'success') throw new Error(result.message || 'Delete failed');
@@ -363,7 +363,7 @@ async function saveNote() {
   if (!currentNoteId) return;
   var notes = document.getElementById('note-textarea').value.trim();
   try {
-    var res = await fetch(SCRIPT_URL + '?action=updateNote&row_id=' + encodeURIComponent(currentNoteId) + '&notes=' + encodeURIComponent(notes));
+    var res = await fetch(SCRIPT_URL + '?reqAction=updateNote&row_id=' + encodeURIComponent(currentNoteId) + '&notes=' + encodeURIComponent(notes));
     if (!res.ok) throw new Error('HTTP ' + res.status);
     var result = await res.json();
     if (result.status !== 'success') throw new Error(result.message || 'Save failed');
