@@ -320,8 +320,7 @@ textarea{min-height:88px;resize:vertical}
 </div>
 
 <script>
-// ── REPLACE THIS URL with your deployed Google Apps Script Web App URL ──
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnl2C7ow6EATxuVBofSpPWDfr-mHSP4-Nw5kwpC9Exsj_pGU-E-Ox7K3QynsEzuuxsxg/exec';
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx29ISquF0KQxSwSzW4GV9LQclr1ssb6BZ_iJP9lXYThLMMurwI8_Ssc6tz24E6b_tnkA/exec';
 
 var npsVal = null;
 
@@ -568,11 +567,11 @@ async function submitForm() {
   document.getElementById('btn-submit').disabled = true;
 
   try {
-    var res = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
+    var params = new URLSearchParams();
+    params.append('action', 'submit');
+    params.append('data', JSON.stringify(payload));
 
+    var res = await fetch(SCRIPT_URL + '?' + params.toString());
     var result = await res.json();
     if (result.status !== 'success') throw new Error(result.message || 'Unknown error');
 
