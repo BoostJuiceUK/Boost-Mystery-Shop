@@ -179,7 +179,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);fon
 <div id="modal-overlay">
   <div class="modal-inner">
     <button class="modal-close" onclick="closeModal()">✕ Close</button>
-    <button class="modal-print-btn btn-dl" onclick="window.print()" style="float:right;margin-right:10px;margin-bottom:16px">⬇ Save as PDF</button>
+    <button class="modal-print-btn btn-dl" onclick="printCurrentReport()" style="float:right;margin-right:10px;margin-bottom:16px">⬇ Save as PDF</button>
     <div style="clear:both"></div>
     <div id="modal-content"></div>
   </div>
@@ -242,7 +242,19 @@ function renderStats() {
 
 function perfClass(p) { return p >= 90 ? 'pill-g' : p >= 75 ? 'pill-a' : 'pill-r'; }
 function perfLabel(p) { return p >= 90 ? 'Excellent' : p >= 75 ? 'Good' : p >= 60 ? 'Needs improvement' : 'Unsatisfactory'; }
-function fmtDate(d)   { if(!d) return '—'; try { return new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); } catch(e){ return d; } }
+function parseVisitDate(d) {
+  if (!d) return null;
+  var s = String(d);
+  var dt = s.indexOf('T') >= 0 ? new Date(s) : new Date(s + 'T12:00:00');
+  return isNaN(dt.getTime()) ? null : dt;
+}
+function fmtDate(d) {
+  var dt = parseVisitDate(d);
+  return dt ? dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : (d ? String(d) : '—');
+}
+function stripShopperDetails(html) {
+  return String(html).replace(/<div style="padding:13px 18px;[^"]*"><div style="[^"]*">Shopper<\/div>[\s\S]*?<\/div><\/div>/, '');
+}
 
 function renderTable() {
   var search = document.getElementById('filter-search').value.toLowerCase();
@@ -291,12 +303,19 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 
 function findRow(id) { return allData.find(function(r){ return r.row_id === id; }); }
 
+var currentViewData = null;
+
 function viewReport(id) {
   var r = findRow(id);
   if (!r || !r.report_html) { alert('Report HTML not found for this submission.'); return; }
+  currentViewData = { id: id, store: r.store || 'Store', visit_date: r.visit_date || '' };
   document.getElementById('modal-content').innerHTML = r.report_html;
   document.getElementById('modal-overlay').classList.add('show');
   document.body.style.overflow = 'hidden';
+}
+
+function printCurrentReport() {
+  if (currentViewData) downloadPdf(currentViewData.id, currentViewData.store, currentViewData.visit_date);
 }
 
 function closeModal() {
@@ -307,7 +326,8 @@ function closeModal() {
 function downloadPdf(id, store, visitDate) {
   var r = findRow(id);
   if (!r || !r.report_html) { alert('No report found.'); return; }
-  var dateStr = visitDate ? new Date(visitDate+'T12:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'}).replace(/\//g,'-') : 'No-Date';
+  var dt = parseVisitDate(visitDate);
+  var dateStr = dt ? dt.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric'}).replace(/\//g,'-') : 'No-Date';
   var title   = (store || 'Store') + ' - ' + dateStr + ' - Mystery Shop';
   var win = window.open('', '_blank');
   win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + title + '</title>');
@@ -316,7 +336,7 @@ function downloadPdf(id, store, visitDate) {
   win.document.write('*{box-sizing:border-box;margin:0;padding:0} body{font-family:"DM Sans",sans-serif;background:#f5f5f2;padding:20px;font-size:15px;color:#1a1a1a}');
   win.document.write('@media print{@page{margin:12mm;size:A4} *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important} body{padding:0}}');
   win.document.write('</style></head><body>');
-  win.document.write(r.report_html);
+  win.document.write(stripShopperDetails(r.report_html));
   win.document.write('<script>window.onload=function(){setTimeout(function(){window.print();},600)};<\/script>');
   win.document.write('</body></html>');
   win.document.close();
